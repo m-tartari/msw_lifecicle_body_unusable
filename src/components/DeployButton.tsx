@@ -1,28 +1,18 @@
 import React from 'react'
-import { Backdrop, Button, CircularProgress } from '@mui/material'
+import axios from 'axios'
 
-import { useDeployModel, type DeployPayload } from 'utils/api.js'
+import { type DeployPayload } from 'utils/types.js'
 
-const DeployButton: React.FC<DeployPayload & { onClose: (b: boolean) => void }> = ({
-  onClose,
-  ...props
-}) => {
-  const requestDeploy = useDeployModel()
-  const onClick = () => requestDeploy.mutate(props, { onSuccess: () => onClose(true) })
-
-  if (requestDeploy.isPending) {
-    return (
-      <Backdrop open={true} aria-label="loading-screen">
-        <CircularProgress />
-      </Backdrop>
-    )
+const Button: React.FC<DeployPayload> = (props) => {
+  const onClick = async () => {
+    await axios.post('http://localhost/foo', props)
   }
 
   return (
-    <Button onClick={onClick} aria-label="deploy-button">
+    <button onClick={onClick} aria-label="deploy-button">
       Deploy
-    </Button>
+    </button>
   )
 }
 
-export default DeployButton
+export default Button

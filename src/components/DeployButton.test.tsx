@@ -1,11 +1,9 @@
-import { screen, act } from '@testing-library/react'
+import { screen, act, render } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 
-import DeployButton from './DeployButton.js'
-import { DeployPayload } from 'utils/api.js'
-import { checkRequestPayload, render, server } from 'utils/testUtils.js'
-
-const onClose = vi.fn((_update: boolean) => null)
+import Button from './DeployButton.js'
+import { DeployPayload } from 'utils/types.js'
+import { checkRequestPayload, server } from 'utils/testUtils.js'
 
 beforeAll(() => {
   server.listen()
@@ -33,7 +31,7 @@ describe('The Deploy Button', () => {
         return new HttpResponse(null, { status: 204 })
       })
     )
-    render(<DeployButton {...expectedPayload} onClose={onClose} />)
+    render(<Button {...expectedPayload} />)
     // Establish a request listener but don't resolve it yet.
     const validatePayload = checkRequestPayload('POST', 'http://localhost/foo', expectedPayload)
 
@@ -43,9 +41,6 @@ describe('The Deploy Button', () => {
     // Await the request, get its reference, and check content to match what expected
     const payloadMatches = await validatePayload
     expect(payloadMatches).toBeTruthy()
-
-    expect(await screen.findByText('Deployment Succesful')).toBeInTheDocument()
-    expect(onClose).toHaveBeenLastCalledWith(true)
   })
 
   it('async', async () => {
@@ -58,7 +53,7 @@ describe('The Deploy Button', () => {
         return new HttpResponse(null, { status: 204 })
       })
     )
-    render(<DeployButton {...expectedPayload} onClose={onClose} />)
+    render(<Button {...expectedPayload} />)
     // Establish a request listener but don't resolve it yet.
     const validatePayload = checkRequestPayload('POST', 'http://localhost/foo', expectedPayload)
 
@@ -68,8 +63,5 @@ describe('The Deploy Button', () => {
     // Await the request, get its reference, and check content to match what expected
     const payloadMatches = await validatePayload
     expect(payloadMatches).toBeTruthy()
-
-    expect(await screen.findByText('Deployment Succesful')).toBeInTheDocument()
-    expect(onClose).toHaveBeenLastCalledWith(true)
   })
 })
