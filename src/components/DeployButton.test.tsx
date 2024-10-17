@@ -46,7 +46,7 @@ describe('The Deploy Button', () => {
   it('async', async () => {
     server.use(
       http.post<never, DeployPayload>('http://localhost/foo', async ({ request }) => {
-        const body = await request.json()
+        const body = await request.clone().json()
         if (body.name === 'bar') {
           return new HttpResponse(null, { status: 400 })
         }

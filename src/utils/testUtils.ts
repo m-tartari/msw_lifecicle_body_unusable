@@ -26,7 +26,7 @@ export function checkRequestPayload<T extends object>(
     server.events.on('request:match', async ({ request, requestId }) => {
       if (requestId === id) {
         try {
-          const payload: T = await request.json()
+          const payload: T = await request.clone().json()
           resolve(isEqual(expectedPayload, payload))
         } catch (error) {
           console.error('Error parsing request:', error)
